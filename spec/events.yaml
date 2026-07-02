@@ -1,0 +1,29 @@
+# events.yaml — 분석 이벤트의 단일 원천(SSOT) (구 10 Metrics_Growth의 이벤트부)
+# metrics.yaml의 지표가 이 이벤트들을 참조한다. validate가 참조 정합성을 검사한다.
+# 오프라인 앱이라도 로컬 집계/후속 동기화를 위해 이벤트 정의는 유지한다.
+
+events:
+  - name: app_open
+    trigger: "앱 실행"
+    props: [os, version]
+  - name: onboarding_completed
+    trigger: "온보딩 완료"
+    props: [goal_cups, reminder_count]
+  - name: water_logged
+    trigger: "한 잔 기록"
+    props: [cup_index, source]        # source: button | reminder | widget
+  - name: daily_goal_reached
+    trigger: "일일 목표 달성"
+    props: [cups, streak]
+  - name: reminder_shown
+    trigger: "리마인더 노출"
+    props: [slot]
+  - name: reminder_permission_result
+    trigger: "알림 권한 응답"
+    props: [granted]
+  - name: purchase_remove_ads
+    trigger: "광고 제거 구매 완료"
+    props: [price]
+  - name: error_occurred
+    trigger: "에러 발생"
+    props: [code, screen]

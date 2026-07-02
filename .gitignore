@@ -1,0 +1,12 @@
+# SLAM boilerplate
+__pycache__/
+*.pyc
+.DS_Store
+
+# OMC / agent operational state (not part of the boilerplate)
+.omc/
+.omo/
+
+# local editor
+.idea/
+.vscode/

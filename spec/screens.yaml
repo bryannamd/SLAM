@@ -1,0 +1,56 @@
+# screens.yaml — 화면 명세 + 6상태 계약 (구 03 Product_Spec Part C)
+# 6상태: loading | empty | error | success | offline | permission_denied
+# 규칙(codex 보정): 모든 화면이 6상태를 '무조건' 구현하면 형식주의다.
+#   - 해당 상태를 구현하면: { ui: "...", copy: "..." }
+#   - 해당 상태가 실제로 불가능하면: { na: "<사유>" }  ← 사유 필수
+#   validate는 '누락(FAIL)'과 '명시적 N/A(OK)'를 구분한다. 사유 없는 na는 FAIL.
+# priority: p0 화면은 acceptance(수용 기준)가 반드시 있어야 한다.
+
+screens:
+  - id: onboarding
+    purpose: "목표 잔 수와 알림 시간을 정한다"
+    priority: p0
+    acceptance: "목표·알림 설정 후 홈으로 진입하고, 설정이 로컬에 저장된다"
+    states:
+      loading:   { na: "로컬 설정뿐이라 네트워크 로딩 없음" }
+      empty:     { na: "입력 폼이라 빈 상태 없음" }
+      error:     { ui: "인라인 에러 텍스트", copy: "값을 확인해주세요" }
+      success:   { ui: "홈으로 전환", copy: "" }
+      offline:   { na: "오프라인 로컬 앱이라 온라인 의존 없음" }
+      permission_denied: { ui: "권한 안내 배너", copy: "알림을 켜면 제때 물을 마실 수 있어요" }
+
+  - id: home
+    purpose: "오늘 진행률을 보고 한 잔을 기록한다"
+    priority: p0
+    acceptance: "기록 버튼 1탭으로 잔 수가 +1 되고 진행률 링이 즉시 갱신된다"
+    states:
+      loading:   { ui: "진행률 스켈레톤", copy: "" }
+      empty:     { ui: "일러스트 + 첫 기록 CTA", copy: "첫 한 잔을 기록해보세요" }
+      error:     { ui: "에러 카드 + 재시도", copy: "저장에 실패했어요. 다시 시도해주세요" }
+      success:   { ui: "진행률 링 + 기록 버튼", copy: "" }
+      offline:   { na: "로컬 저장이라 오프라인이 정상 동작" }
+      permission_denied: { ui: "상단 권한 재요청 배너", copy: "알림 권한이 꺼져 있어요" }
+
+  - id: stats
+    purpose: "주간 물 섭취 통계를 본다"
+    priority: p1
+    acceptance: "최근 7일 막대 그래프가 표시된다"
+    states:
+      loading:   { ui: "그래프 스켈레톤", copy: "" }
+      empty:     { ui: "빈 그래프 + 안내", copy: "아직 기록이 없어요" }
+      error:     { ui: "에러 카드 + 재시도", copy: "불러오지 못했어요" }
+      success:   { ui: "주간 막대 그래프", copy: "" }
+      offline:   { na: "로컬 데이터라 오프라인 정상" }
+      permission_denied: { na: "권한이 필요한 데이터 없음" }
+
+  - id: settings
+    purpose: "목표·알림·광고제거를 관리한다"
+    priority: p1
+    acceptance: "설정 변경이 즉시 저장되고 재실행 후 유지된다"
+    states:
+      loading:   { na: "로컬 설정 즉시 로드" }
+      empty:     { na: "고정 항목이라 빈 상태 없음" }
+      error:     { ui: "인라인 에러", copy: "저장에 실패했어요" }
+      success:   { ui: "설정 리스트", copy: "" }
+      offline:   { na: "오프라인 정상" }
+      permission_denied: { ui: "알림 항목 비활성 + 안내", copy: "설정에서 알림 권한을 켜주세요" }

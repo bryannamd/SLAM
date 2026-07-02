@@ -1,0 +1,35 @@
+# metrics.yaml — 성공·성장 지표 타겟의 단일 원천 (구 03 성공지표 + 10 AARRR 통합)
+# 각 지표는 events.yaml의 이벤트로 측정 가능해야 한다(uses). validate가 참조를 검사한다.
+# agy 보정: 모바일 고유 클라이언트 지표(startup/battery/local-db)를 반드시 포함한다.
+# 숫자는 기본값일 뿐 — 오프라인/로컬 앱에선 서버 지표(API 응답 등)를 넣지 않는다.
+
+# 제품/성장 지표(AARRR) — build target으로도 쓰인다(출시 후 미달 시 개선 루프 트리거)
+product:
+  - key: onboarding_completion
+    target: "60%+"
+    uses: [app_open, onboarding_completed]
+  - key: d1_retention
+    target: "40%+"
+    uses: [app_open]
+  - key: d7_retention
+    target: "25%+"
+    uses: [app_open]
+  - key: daily_goal_rate            # 핵심 가치 지표
+    target: "50%+"
+    uses: [daily_goal_reached]
+  - key: remove_ads_conversion
+    target: "3%+"
+    uses: [purchase_remove_ads]
+
+# 모바일 고유 클라이언트 지표(agy 보강) — 서버 지표 대신 이걸 본다
+client:
+  - key: cold_start
+    target: "< 2s"
+  - key: frame_rate
+    target: "60fps (jank < 1%)"
+  - key: local_db_write
+    target: "< 16ms (한 잔 기록 저장)"
+  - key: battery
+    target: "백그라운드 알림으로 인한 과도한 소모 없음"
+  - key: crash_free_sessions
+    target: "> 99.5%"

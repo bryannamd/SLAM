@@ -1,0 +1,22 @@
+# tasks.yaml — 화면·기능별 진행상태(에이전트가 갱신, STATUS.md 생성의 입력)
+# status: todo | in_progress | built | verified | blocked
+# verified 는 scripts/validate.py 통과 + 해당 화면 E2E/자가검증 완료를 뜻한다.
+# screen 값은 screens.yaml의 id와 일치해야 한다(validate가 검사).
+
+tasks:
+  - screen: onboarding
+    status: verified
+    verify: "6상태 정의 완료, 설정 저장 E2E 통과"
+    blocker: null
+  - screen: home
+    status: in_progress
+    verify: "기록/진행률 구현 중"
+    blocker: null
+  - screen: stats
+    status: todo
+    verify: ""
+    blocker: null
+  - screen: settings
+    status: blocked
+    verify: ""
+    blocker: "광고 제거 IAP 상품 등록 대기(스토어 콘솔)"
