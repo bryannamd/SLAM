@@ -1,0 +1,28 @@
+# monetization.yaml — 수익 모델·가격·손익·ASO (구 11의 수익부)
+# 규제·권한 블로커는 compliance.yaml에서 관리한다(Launch 게이트에서 강제).
+# manifest.monetization_model과 일치해야 한다.
+
+model: freemium                 # manifest와 동일해야 함
+free_features:
+  - "물 기록·목표·리마인더·오늘 진행률"
+paid_features:
+  - "광고 제거"
+  - "주간/월간 상세 통계"
+paywall_trigger: "통계 화면 진입 또는 3일차 리텐션 시점"
+
+pricing:
+  currency: KRW
+  base_price: 1100              # 심리적 티어(₩1,100). 금액은 전체표기 규칙 준수
+  model_type: iap_nonconsumable  # 광고 제거는 비소비성 1회 구매
+  free_trial: "없음"
+
+# 손익 간이 모델(월간) — LTV > 3×CAC 유지 못하면 유료 획득 중단, 오가닉/리텐션 집중
+unit_economics:
+  store_fee: "15~30%"
+  monthly_opex: "툴·ASO 소액(서버 없음)"
+  rule: "LTV > 3 x CAC"
+
+aso:
+  app_name: "SipReminder — 물 마시기 알림"
+  keywords: "물 마시기, 수분 섭취, 알림, 습관"
+  screenshot_hook: "첫 2장에 '절제된 알림' 가치 노출"

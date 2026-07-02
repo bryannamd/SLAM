@@ -1,20 +1,15 @@
-# manifest.yaml — 앱 정체성의 단일 원천(canonical)
-# 이 파일은 사람이 채우고, 나머지 spec/과 STATUS.md·validate가 여기를 기준으로 판단한다.
-# 규칙: 대괄호 [ ]·___·TODO 같은 자리표시자를 남기면 validate가 FAIL 시킨다. 실제 값을 쓴다.
-# 아래는 EXAMPLE(물 마시기 알림 앱). 새 프로젝트면 값만 갈아끼운다.
+# manifest.yaml — 앱 정체성(canonical). TODO를 실제 값으로 바꾼다.
+# 채워진 예시: examples/sip-reminder/spec/manifest.yaml 참고.
+# validate.py가 남은 TODO/자리표시자를 FAIL로 잡아 미완성을 막는다.
 
-name: "SipReminder"                 # EXAMPLE — 앱 이름
-one_liner: "바쁜 직장인이 물 마시는 습관을 잊지 않도록 부드럽게 알려준다"  # EXAMPLE
-platforms: [ios, android]           # ios | android | web 중
-backend: false                      # false면 06/openapi·서버 스펙 전체를 건너뛴다(오프라인·로컬 우선)
-audience: general                    # general | minors  (minors면 compliance.yaml의 COPPA 게이트 강제)
-risk_class: low                      # low | medium | high — 결제·개인정보·외부비용이 크면 medium/high
+name: "TODO"
+one_liner: "TODO"
+platforms: [ios, android]      # ios | android | web
+backend: false                  # false면 서버/openapi 스펙 전체 생략(오프라인·로컬 우선)
+audience: general               # general | minors (minors면 compliance.yaml COPPA 강제)
+risk_class: low                 # low | medium | high
+monetization_model: free        # free | freemium | subscription | iap | ads
 
-monetization_model: freemium        # free | freemium | subscription | iap | ads  (compliance와 연동)
-
-owners:                              # 2인팀 역할(문서·의사결정 책임 소재)
-  product: "팀원 A"
-  engineering: "팀원 B"
-
-# risk_class와 audience가 Risk/Compliance 게이트의 강도를 결정한다.
-# high 또는 minors면 GATES.md의 Risk/Launch 게이트에서 인간 승인이 반드시 필요하다.
+owners:
+  product: "TODO"
+  engineering: "TODO"

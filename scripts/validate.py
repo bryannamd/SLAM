@@ -5,7 +5,8 @@
 에이전트가 '그럴듯한 쓰레기'를 만들어도 여기서 걸린다.
 
 사용:
-  python3 scripts/validate.py              # 전체 검증
+  python3 scripts/validate.py              # 루트 spec/ 검증
+  python3 scripts/validate.py --root examples/sip-reminder  # 하위 프로젝트 검증
   python3 scripts/validate.py --gate launch  # 출시 블로커까지 검사
   python3 scripts/validate.py --selftest     # 대비 계산 자가검증
   python3 scripts/validate.py --strict       # 경고도 실패로 취급
@@ -17,7 +18,8 @@ import json
 import pathlib
 import yaml
 
-ROOT = pathlib.Path(__file__).resolve().parent.parent  # docs/_template
+# 검증 대상 프로젝트 루트(기본=repo 루트). --root 로 examples/sip-reminder 등을 가리킨다.
+ROOT = pathlib.Path(__file__).resolve().parent.parent
 STATE_KEYS = ["loading", "empty", "error", "success", "offline", "permission_denied"]
 PLACEHOLDER = re.compile(r"\[[^\]]*\]|___|TODO|FIXME")
 
@@ -91,6 +93,10 @@ def check_placeholders(name, obj):
 
 
 def main():
+    global ROOT
+    if "--root" in sys.argv:
+        i = sys.argv.index("--root")
+        ROOT = pathlib.Path(sys.argv[i + 1]).resolve()
     gate = None
     if "--gate" in sys.argv:
         i = sys.argv.index("--gate")
@@ -110,7 +116,8 @@ def main():
     decisions = load_yaml("state/decisions.yaml")
 
     for nm, ob in [("manifest", manifest), ("evidence", evidence), ("product", product),
-                   ("screens", screens), ("monetization", monet), ("compliance", compliance)]:
+                   ("screens", screens), ("architecture", load_yaml("spec/architecture.yaml")),
+                   ("monetization", monet), ("compliance", compliance)]:
         if ob is not None:
             check_placeholders(nm, ob)
 

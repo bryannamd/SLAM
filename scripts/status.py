@@ -4,14 +4,19 @@
 터미널 에이전트 환경의 '직관적 UI'는 GUI가 아니라 이 생성 대시보드다.
 사람이 STATUS.md 하나로 게이트 상태·화면 진행·blocker·승인 대기·지표 타겟을 본다.
 
-사용: python3 scripts/status.py   # STATUS.md 갱신
+사용:
+  python3 scripts/status.py                          # 루트 STATUS.md 갱신
+  python3 scripts/status.py --root examples/sip-reminder   # 하위 프로젝트 STATUS 갱신
 """
 import pathlib
 import subprocess
 import sys
 import yaml
 
-ROOT = pathlib.Path(__file__).resolve().parent.parent
+SCRIPT = pathlib.Path(__file__).resolve()          # scripts/validate.py 위치 고정용
+ROOT = SCRIPT.parent.parent                         # 대시보드 대상 프로젝트 루트(기본=repo 루트)
+if "--root" in sys.argv:
+    ROOT = pathlib.Path(sys.argv[sys.argv.index("--root") + 1]).resolve()
 STATE_KEYS = ["loading", "empty", "error", "success", "offline", "permission_denied"]
 
 
@@ -26,8 +31,8 @@ def main():
     tasks = {t["screen"]: t for t in (y("state/tasks.yaml") or {}).get("tasks", [])}
     decisions = (y("state/decisions.yaml") or {}).get("decisions", [])
 
-    # validate 실행 결과를 대시보드에 반영
-    v = subprocess.run([sys.executable, str(ROOT / "scripts/validate.py")],
+    # validate 실행 결과를 대시보드에 반영(같은 --root로)
+    v = subprocess.run([sys.executable, str(SCRIPT.parent / "validate.py"), "--root", str(ROOT)],
                        capture_output=True, text=True)
     validate_line = v.stdout.strip().splitlines()[-2] if v.stdout.strip() else "?"
     validate_ok = v.returncode == 0

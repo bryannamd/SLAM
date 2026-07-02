@@ -1,0 +1,30 @@
+# decisions.yaml — 인간 승인 큐. 에이전트는 스스로 결정하면 안 되는 것을 여기에 올린다.
+# 5개 게이트(GATES.md)와 Risk 항목이 여기로 모인다. 큐는 짧게 유지한다.
+# status: pending | approved | rejected
+# 각 항목은 짧게: decision / recommendation / alternatives / risk / impacts / reversible
+# gate: evidence | scope | brand_ux | risk | launch  (또는 ad_hoc)
+
+decisions:
+  - id: D001
+    gate: evidence
+    decision: "SipReminder를 만들지 결정"
+    recommendation: "진행 — 경쟁앱 리뷰·키워드 증거 확보, kill 기준 미해당"
+    alternatives: ["보류하고 랜딩 테스트 먼저"]
+    risk: "낮음"
+    impacts: [evidence.yaml]
+    reversible: true
+    status: approved
+    decided_by: "팀원 A"
+    date: "2026-07-02"
+
+  - id: D002
+    gate: risk
+    decision: "광고 제거 IAP(비소비성) 도입"
+    recommendation: "도입 — 아동 대상 아님, 광고 대신 1회 구매가 신뢰에 유리"
+    alternatives: ["구독", "광고 유지"]
+    risk: "중간(스토어 IAP 정책·정산 세팅 필요)"
+    impacts: [monetization.yaml, compliance.yaml]
+    reversible: true
+    status: pending          # ← 아직 인간 승인 대기(STATUS.md에 노출됨)
+    decided_by: ""
+    date: ""

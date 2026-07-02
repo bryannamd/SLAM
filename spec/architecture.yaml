@@ -1,35 +1,33 @@
-# architecture.yaml — 기술 아키텍처(구 05 축약). 모바일 스택은 초기 1회 확정 → 보일러플레이트.
-# backend: false면 서버·API 섹션 전체를 건너뛴다(억지로 채우면 drift만 생김 — 검증 합의).
-# 백엔드를 쓰면 서술형 대신 spec/openapi.yaml(OpenAPI 3) 한 장을 원천으로 둔다.
+# architecture.yaml — 기술 스택·보안·롤백. 스택은 초기 1회 확정.
+# 채워진 예시: examples/sip-reminder/spec/architecture.yaml
+# backend: false면 서버/openapi 섹션 생략. true면 spec/openapi.yaml(OpenAPI 3)을 원천으로.
 
 stack:
-  framework: "Flutter 3.x"
-  language: "Dart"
-  state: "Riverpod"
-  local_db: "Drift (SQLite)"
-  notifications: "flutter_local_notifications"
-  backend: "none"                # none | firebase | supabase | custom
+  framework: "TODO"        # 예: Flutter 3.x / React Native
+  language: "TODO"         # 예: Dart / TypeScript
+  state: "TODO"            # 예: Riverpod / Zustand
+  local_db: "TODO"         # 예: Drift(SQLite) / 없음
+  backend: "none"          # none | firebase | supabase | custom
   ci: "GitHub Actions"
 
-layers:                          # 의존 방향: presentation → domain → data (역방향 금지)
+layers:                    # 의존 방향: presentation → domain → data (역방향 금지)
   presentation: "화면·위젯"
-  domain: "유스케이스·엔티티(순수 Dart)"
-  data: "로컬 DB·리포지토리"
+  domain: "유스케이스·엔티티(순수)"
+  data: "DB·리포지토리"
 
-environments: [dev, staging, prod]   # 키·엔드포인트는 .env/환경변수, 하드코딩 금지
+environments: [dev, staging, prod]
 
 security:
-  secrets: "코드에 키 하드코딩 금지, 민감값은 Keychain/Keystore"
+  secrets: "키 하드코딩 금지, 민감값은 Keychain/Keystore"
   input_validation: "모든 사용자 입력 검증"
   transport: "네트워크 사용 시 HTTPS 강제"
 
-# 롤백: 오프라인 앱은 스토어 단계적 배포 되돌리기 + 원격 설정 토글로 대응
 rollback:
   triggers:
     - "crash-free < 99%"
     - "P0 버그 2건 이상"
     - "데이터 손상"
   methods:
-    - "단계적 배포 일시중지(Play staged rollout / App Store phased release)"
+    - "단계적 배포 일시중지"
     - "이전 빌드 재배포"
     - "원격 설정으로 문제 기능 OFF"

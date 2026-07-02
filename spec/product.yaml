@@ -1,63 +1,31 @@
-# product.yaml — PRD + IA/Flow (구 03 Product_Spec의 Part A·B)
-# 화면 세부(6상태)는 screens.yaml로 분리. 지표는 metrics.yaml, 이벤트는 events.yaml이 원천.
+# product.yaml — PRD + IA/Flow. 채워진 예시: examples/sip-reminder/spec/product.yaml
 
-goal: "출시 30일 안에 사용자가 하루 물 섭취를 평균 6잔 이상 기록하도록 돕는다"  # EXAMPLE
+goal: "TODO"
 
-# 핵심 시나리오 (3개 이하) — 상황→행동→결과
-scenarios:
-  - name: "첫 알림 받고 기록"
+scenarios:                 # 상황→행동→결과 (3개 이하)
+  - name: "TODO"
     steps:
-      - "사용자가 온보딩에서 목표 잔 수와 알림 시간대를 정하면"
-      - "설정한 시각에 리마인더를 받고 한 번 탭으로 한 잔을 기록하면"
-      - "오늘 진행률이 채워지는 것을 보고 성취감을 얻는다"
-  - name: "하루 마무리 확인"
-    steps:
-      - "저녁에 앱을 열어"
-      - "오늘 기록을 확인하면"
-      - "목표 달성 여부와 연속 달성일을 본다"
+      - "TODO"
 
-# 기능 우선순위 — P0는 MVP 필수(5개 이하 권장)
 features:
-  p0:
-    - "물 한 잔 원탭 기록"
-    - "일일 목표 설정"
-    - "리마인더 알림(로컬)"
-    - "오늘 진행률 표시"
-  p1:
-    - "주간 통계"
-    - "연속 달성일(streak)"
-  p2:
-    - "홈 위젯"
-    - "워치 연동"
+  p0:                      # MVP 필수(5개 이하 권장)
+    - "TODO"
+  p1: []
+  p2: []
 
-out_of_scope:            # scope creep 방지 — 이번 버전에서 '안 만드는 것'을 명시
-  - "계정/로그인(오프라인 로컬만)"
-  - "소셜 공유"
-  - "AI 추천"
+out_of_scope:              # 이번 버전에서 안 만드는 것(scope creep 방지)
+  - "TODO"
 
-# 정보 구조(IA)
-ia:
-  - "온보딩(목표·알림 설정)"
-  - "홈(오늘 진행률·기록 버튼)"
-  - "통계(주간)"
-  - "설정"
+ia:                        # 정보 구조
+  - "TODO"
 
-# 주요 플로우
 flows:
-  - name: "신규 온보딩"
-    path: "실행 → 웰컴 → 목표 설정 → 알림 권한 요청 → 홈"
-  - name: "핵심 기록"
-    path: "홈 → 한 잔 기록 → 진행률 갱신"
+  - name: "TODO"
+    path: "TODO"
 
-# 예외 플로우(Edge) — 화면 전이와 처리
 edge_cases:
-  - situation: "알림 권한 거부"
-    handling: "홈 상단 배너로 권한 재요청 안내(앱은 계속 동작)"
-  - situation: "기록 없음(첫 실행)"
-    handling: "홈 Empty 상태 + 첫 기록 유도 CTA"
-  - situation: "기기 시간 변경/자정 넘김"
-    handling: "일자 롤오버 처리, 진행률 초기화"
+  - situation: "TODO"
+    handling: "TODO"
 
 assumptions:
-  - "사용자는 스마트폰 알림 사용에 익숙하다"
-  - "MVP는 오프라인 로컬 동작(서버 없음)"
+  - "TODO"

@@ -1,43 +1,31 @@
-# compliance.yaml — 권한·개인정보·규제 블로커 (구 11의 규제부 + 권한 통합)
-# 여기의 blockers는 "있으면 좋은 것"이 아니라 "없으면 스토어 반려/삭제"되는 항목이다.
-# validate --gate launch 는 모든 blocker의 resolved: true 를 요구한다(하나라도 false면 출시 불가).
-# manifest.audience == minors 이면 minors 섹션의 coppa 항목이 필수로 채워져야 한다.
+# compliance.yaml — 권한·개인정보·출시 블로커. validate --gate launch가 blockers 전부 resolved를 요구.
+# 채워진 예시: examples/sip-reminder/spec/compliance.yaml
+# audience: minors 이면 minors 섹션(coppa 등)이 필수.
 
-permissions:
-  - name: notifications
-    when: "온보딩 완료 직후"
-    reason: "제때 물을 마시도록 리마인더를 보내기 위해"
-  # 필요 없는 권한은 요청하지 않는다(수집 최소화).
+permissions: []            # 필요한 권한만 추가 { name, when, reason }. 없으면 빈 리스트 유지.
 
 privacy:
-  collects_pii: false            # 오프라인 로컬 앱이라 PII 미수집
-  privacy_policy_url: "https://example.com/privacy"   # EXAMPLE — 유효 링크로 교체
-  terms_url: "https://example.com/terms"
+  collects_pii: false
+  privacy_policy_url: "TODO"   # 유효한 URL로 교체(스토어 필수)
+  terms_url: "TODO"
 
-# 미성년 대상일 때만 의미가 있다. audience: general이면 all_na 이유만 남긴다.
 minors:
   applicable: false
-  coppa: "N/A — 일반 대상 앱(만 14세 미만 특정 아님)"
+  coppa: "N/A — 일반 대상"
   parental_consent: "N/A"
   behavioral_ads_restricted: "N/A"
 
-# 출시 블로커 — Launch 게이트(GATE #5)에서 전부 resolved 여야 한다
+# 출시 블로커 — Launch 게이트에서 전부 resolved: true 여야 한다(지금은 미완료)
 blockers:
   - id: privacy_policy
     desc: "개인정보 처리방침 URL 유효"
-    resolved: true
+    resolved: false
   - id: terms
     desc: "이용약관 URL 유효"
-    resolved: true
+    resolved: false
   - id: apple_privacy_labels
-    desc: "App Privacy(수집 데이터 라벨) 정확 작성"
-    resolved: true
+    desc: "App Privacy 라벨 정확 작성"
+    resolved: false
   - id: play_data_safety
     desc: "Google Play 데이터 안전 섹션 정확 작성"
-    resolved: true
-  - id: iap_disclosure
-    desc: "IAP(광고 제거) 구매·복원 경로 명시"
-    resolved: true
-  - id: store_payout_setup
-    desc: "스토어 정산 계약·세금 정보 입력"
-    resolved: true
+    resolved: false

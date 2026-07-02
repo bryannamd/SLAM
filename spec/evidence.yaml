@@ -1,35 +1,22 @@
-# evidence.yaml — Evidence Gate (구 01 App_Idea_Brief + 02 User_Research 대체)
-# 존재 이유: 자율 파이프라인의 최대 위험은 "그럴듯하지만 아무도 원하지 않는 앱"을
-# 공장식으로 찍어내는 것(codex·agy 공통 지적). 그래서 코드를 한 줄 쓰기 전에
-# "누구의 어떤 문제를, 왜 지금, 무슨 증거로" 만드는지와 "언제 죽일지"를 강제한다.
-# AI가 가상 페르소나 소설을 쓰지 못하도록, 증거는 '실재하는 것'만 인정한다.
+# evidence.yaml — Evidence Gate. 코딩 전 "누구의 어떤 문제를, 왜, 무슨 증거로, 언제 죽일지".
+# 채워진 예시: examples/sip-reminder/spec/evidence.yaml
+# 증거는 실재하는 것만(가상 페르소나 금지): 경쟁앱 리뷰·키워드 볼륨·랜딩 테스트·실인터뷰.
 
-problem: "물을 충분히 마셔야 하는 걸 알지만 업무 몰입 중 잊어버려 하루 2~3잔에 그친다"  # EXAMPLE
-target_user: "하루 대부분 앉아서 일하는 20~40대 사무직"                                   # EXAMPLE
-acquisition_channel: "건강·생산성 키워드 ASO + 직장인 커뮤니티"                             # 어디서 사용자가 올지 1개
-value_hypothesis: "가벼운 리마인더만으로 하루 물 섭취를 6잔 이상으로 늘릴 수 있다"           # EXAMPLE
-willingness_hypothesis: "광고 제거·통계에 월 1,100원 지불 의향"                             # 지불/재방문 가설
+problem: "TODO"
+target_user: "TODO"
+acquisition_channel: "TODO"
+value_hypothesis: "TODO"
+willingness_hypothesis: "TODO"
 
-# 증거: 아래 중 최소 2종을 실제로 채운다(빈 리스트면 validate가 경고).
-# 가상 인터뷰 금지 — 실제 경쟁앱 리뷰/키워드 볼륨/랜딩 테스트/실인터뷰만.
-evidence:
-  - type: competitor_review        # competitor_review | keyword_volume | landing_test | interview | store_ranking
-    source: "경쟁앱 A 스토어 리뷰 상위 50건"
-    finding: "'알림이 너무 잦다/광고가 많다' 불만이 반복됨 → 절제된 알림이 차별점"
-  - type: keyword_volume
-    source: "스토어 키워드 도구"
-    finding: "'물 마시기 알림' 월 검색 꾸준, 상위 앱 평점 3점대 → 품질 여지"
+evidence:            # 최소 2종
+  - type: competitor_review     # competitor_review | keyword_volume | landing_test | interview | store_ranking
+    source: "TODO"
+    finding: "TODO"
 
 competitors:
-  - name: "경쟁앱 A"
-    strength: "위젯·워치 연동"
-    weakness: "알림 과다, 광고 과다"
-  - name: "경쟁앱 B"
-    strength: "예쁜 UI"
-    weakness: "무료 기능이 빈약"
+  - name: "TODO"
+    strength: "TODO"
+    weakness: "TODO"
 
-# kill 기준: 하나라도 참이면 이 앱을 만들지 않거나 중단한다(Evidence Gate에서 인간이 판단).
-kill_criteria:
-  - "타깃 사용자의 실제 pain을 뒷받침하는 증거를 하나도 확보하지 못함"
-  - "동일 문제를 이미 잘 푸는 무료 앱이 있고 우리 차별점이 없음"
-  - "지불/재방문 가설을 지지하는 신호가 전무함"
+kill_criteria:       # 하나라도 참이면 만들지 않는다
+  - "TODO — 예: 실제 pain 증거를 하나도 확보하지 못함"
