@@ -1,5 +1,5 @@
 ---
-description: spec 무결성 + 코드 게이트를 실행하고 결과를 보고
+description: 완료 게이트 — 스펙 무결성 + 코드 검사(analyze/format/test)까지 통과 확인
 ---
 
 자가 게이트(AGENTS.md §5). PASS가 아니면 완료를 주장하지 않는다.

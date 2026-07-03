@@ -1,5 +1,5 @@
 ---
-description: 해당 게이트 판단 항목을 decisions.yaml 승인 큐에 올림
+description: 게이트 판단을 사람 승인 큐(decisions.yaml)에 올림 — 결정은 사람이 한다
 argument-hint: evidence|scope|brand_ux|risk|launch
 ---
 

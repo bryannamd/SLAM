@@ -1,5 +1,5 @@
 ---
-description: spec/ 무결성 검증 후 부족한 필드·다음 게이트를 안내
+description: 스펙 점검(읽기 전용) — 부족한 필드·지금 걸린 게이트·다음 할 일을 안내
 ---
 
 `AGENTS.md`의 단일 원천 규칙을 따른다(spec가 canonical, docs는 생성물).
