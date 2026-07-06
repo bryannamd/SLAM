@@ -16,6 +16,21 @@
 | stats | p1 | ⬜ todo | 4/2 | — |
 | settings | p1 | ⛔ 막힘 | 3/3 | 광고 제거 IAP 상품 등록 대기(스토어 콘솔) |
 
+## 지표 타겟
+
+| 지표 | 구분 | 목표 | 실측 |
+|---|---|---|---|
+| onboarding_completion | product | 60%+ | — |
+| d1_retention | product | 40%+ | — |
+| d7_retention | product | 25%+ | — |
+| daily_goal_rate | product | 50%+ | — |
+| remove_ads_conversion | product | 3%+ | — |
+| cold_start | client | < 2s | — |
+| frame_rate | client | 60fps (jank < 1%) | — |
+| local_db_write | client | < 16ms (한 잔 기록 저장) | — |
+| battery | client | 백그라운드 알림으로 인한 과도한 소모 없음 | — |
+| crash_free_sessions | client | > 99.5% | — |
+
 ## 인간 승인 대기 (1)
 
 - **[risk] D002 — 광고 제거 IAP(비소비성) 도입**

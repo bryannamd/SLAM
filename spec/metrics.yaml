@@ -1,5 +1,6 @@
 # metrics.yaml — 성공·성장 지표 타겟. product는 events.yaml 이벤트로 측정 가능해야 한다.
 # client는 모바일 고유 지표(서버 지표 대신). 채워진 예시: examples/sip-reminder/spec/metrics.yaml
+# 출시 후: 각 지표에 actual: "실측값"을 기입하면 STATUS.md 지표 표에 뜬다(폐루프 기준선).
 
 product:
   - key: d1_retention

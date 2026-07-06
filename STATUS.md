@@ -13,6 +13,14 @@
 |---|---|---|---|---|
 | home | p0 | ⬜ todo | 4/2 | — |
 
+## 지표 타겟
+
+| 지표 | 구분 | 목표 | 실측 |
+|---|---|---|---|
+| d1_retention | product | 40%+ | — |
+| cold_start | client | < 2s | — |
+| crash_free_sessions | client | > 99.5% | — |
+
 ## 인간 승인 대기 (0)
 
 _대기 중인 결정 없음._

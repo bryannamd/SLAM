@@ -11,6 +11,11 @@ stack:
   backend: "none"                # none | firebase | supabase | custom
   ci: "GitHub Actions"
 
+commands:                        # 코드 게이트 명령(/verify·/build-screen이 실행)
+  analyze: "flutter analyze"
+  format: "dart format --set-exit-if-changed ."
+  test: "flutter test"
+
 layers:                          # 의존 방향: presentation → domain → data (역방향 금지)
   presentation: "화면·위젯"
   domain: "유스케이스·엔티티(순수 Dart)"
