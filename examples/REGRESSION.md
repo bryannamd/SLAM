@@ -14,9 +14,9 @@
 
 `sip-reminder`는 의도적으로 미완성 상태로 남겨둔다(화면 4개 중 verified 1개, pending 결정 1건,
 in_progress/todo/blocked 화면 존재) — **수정 대상이 아니다.** `_complete-min`은 화면 1개(home)를
-spec 10파일 + state 2파일 + 최소 실제 소스(`app/lib/`)까지 전부 완비해 "출시해도 되는 최소 앱"을
+spec 10파일 + state 3파일 + 최소 실제 소스(`app/lib/`)까지 전부 완비해 "출시해도 되는 최소 앱"을
 흉내낸다(모바일 프로파일). `web-complete-min`은 화면 2개(bookmarks, tags)를 spec 10파일 + state
-2파일 + 최소 실제 소스(`app/src/`, TypeScript/React)까지 전부 완비한 web 프로파일 대응물이다 —
+3파일 + 최소 실제 소스(`app/src/`, TypeScript/React)까지 전부 완비한 web 프로파일 대응물이다 —
 `platform_profile: web`이라 상태 계약이 `route_404`/`auth_required`로 바뀌고, `deploy_target:
 web_host`, client 지표에 `lcp`/`cls` 등 Core Web Vitals가 들어간다.
 

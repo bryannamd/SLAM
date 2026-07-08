@@ -56,7 +56,7 @@ scaffold → build-data → build-domain → build-screen(화면별 반복) → 
 
 ## 5. 검증 계약 (자가 게이트)
 
-- `validate.py` PASS = spec 무결성(자리표시자·6상태·대비·이벤트 정합·수익 필드·블로커).
+- `validate.py` PASS = spec 무결성(자리표시자·6상태·대비·이벤트 정합·수익 필드). 출시 블로커(`compliance.blockers`)는 전역이 아니라 `--gate launch`에서만 FAIL로 잡는다.
 - 게이트별 강제: `--gate evidence`(증거 2종·필수 필드) · `--gate scope`(p0≤5·out_of_scope) · `--gate brand_ux`(대비 쌍) · `--gate launch`(블로커 0 + 미성년 규제 + 전 화면 verified(+verify_evidence: PASS·by·date)/launch_scope 제외(p0은 제외 불가) + pending 결정 0 + launch 승인 결정 존재).
 - 코드 게이트(매 화면): `architecture.yaml`의 `commands`(analyze·format·test)를 돌린다.
   예: Flutter면 `flutter analyze` 무경고 · `dart format` · 위젯/E2E. React Native면 lint·typecheck·test.
