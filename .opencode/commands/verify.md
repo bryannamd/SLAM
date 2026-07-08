@@ -1,6 +1,7 @@
 ---
 description: 완료 게이트 — 스펙 무결성 + 코드 검사(analyze/format/test)까지 통과 확인
 ---
+<!-- 원본: .claude/commands/verify.md — 동기 수정(두 곳을 함께 고친다) -->
 
 자가 게이트(AGENTS.md §5). PASS가 아니면 완료를 주장하지 않는다.
 

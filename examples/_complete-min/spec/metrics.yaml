@@ -1,0 +1,18 @@
+# metrics.yaml — 성공·성장 지표 타겟의 단일 원천
+# 각 지표는 events.yaml의 이벤트로 측정 가능해야 한다(uses). client에 cold_start 포함(모바일 고유 지표 warn 제거).
+
+product:
+  - key: d1_retention
+    target: "35%+"
+    uses: [app_open]
+  - key: daily_note_rate            # 핵심 가치 지표 — 매일 한 줄을 남기는 비율
+    target: "45%+"
+    uses: [note_saved]
+
+client:
+  - key: cold_start
+    target: "< 2s"
+  - key: local_db_write
+    target: "< 16ms (한 줄 저장)"
+  - key: crash_free_sessions
+    target: "> 99.5%"

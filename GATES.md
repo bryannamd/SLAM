@@ -44,11 +44,14 @@
 사람이 "스토어 계정이 날아가거나 법/비용 사고가 없는가"를 판단. 승인 전 자동 실행하지 않는다.
 
 ## GATE #5 — Launch
-전제: `validate.py --gate launch` PASS(출시 블로커 0 + 미성년 규제 충족), 스테이징 무결성.
+전제: `validate.py --gate launch` PASS — 출시 블로커 0 + 미성년 규제 충족 + **모든 화면 verified(verify_evidence: PASS·by·date 포함) 또는 launch_scope 제외 명시(단 p0 화면은 제외 불가·출시 범위에 verified 화면 1개 이상) + 모든 게이트 pending 결정 0 + launch 승인 결정(gate:launch·approved) 실존**. 스테이징 무결성.
 - crash-free > 99.5% · P0 0건 · P1 2건 이하(수정계획)
-- `metrics.client` 목표(cold_start 등) 충족
-- 실기기 10분 탐색 QA에서 크래시 없음
-- 스토어 자료·정책 문서 완성, 정산 세팅 완료
+- `metrics.client` 목표 충족(모바일=cold_start 등 · 웹=lcp 등 Core Web Vitals)
+- 실기기/실브라우저 10분 탐색 QA에서 크래시·치명 오류 없음
+- 배포 준비물 완성 — `manifest.deploy_target` 기준:
+  - `app_store`: 스토어 자료·심사 대응·정산 세팅 완료
+  - `web_host`: 도메인·호스팅·SEO 기본(메타/robots/sitemap)·과금 설정 완료
+  - `both`: 위 둘 다
 
 사람이 최종 GO/NO-GO. → GO는 decisions.yaml에 launch 결정 approved로 기록돼야 배포된다.
 

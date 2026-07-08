@@ -1,0 +1,12 @@
+# bindings.yaml — 화면↔코드 파일 매핑(빌드 시 에이전트가 기록, trace.py·codemap.py의 입력)
+# 목적: 스펙(화면·상태·이벤트)과 실제 코드 파일을 이어 드리프트 lint가 어디를 읽을지 알려준다.
+# token_sources는 디자인 토큰 상수 파일 — hex 리터럴이 허용되는 유일한 지점(하드코딩 색 검사에서 제외).
+
+token_sources:
+  - app/lib/tokens.dart
+
+bindings:
+  - screen: home            # screens.yaml의 id와 일치
+    files:
+      - app/lib/home_screen.dart   # 화면 UI(6상태 구현)
+      - app/lib/analytics.dart     # 이벤트 발화 지점(events.yaml과 이름 일치)

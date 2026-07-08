@@ -21,21 +21,25 @@
 | `spec/events.yaml`, `metrics.yaml` | product+eng | 분석 에이전트 | 전원 |
 | `spec/monetization.yaml`, `compliance.yaml` | product | 수익/규제 에이전트 | 전원 |
 | `state/tasks.yaml` | eng | 구현/검증 에이전트 | 전원 |
+| `state/bindings.yaml` | eng | 구현 에이전트(build 시 화면↔코드 매핑 기록) | trace·codemap |
 | `state/decisions.yaml` | — | **아무 에이전트나 올리되 결정은 사람만** | 전원 |
 | 코드 | eng | 구현 에이전트 | — |
 
-## 3. 실행 루프 (화면 1개 단위)
+## 3. 실행 루프 (계층 파이프라인)
+
+계층을 아래에서 위로 쌓는다. 각 단계는 코드 게이트 PASS 전엔 다음으로 넘어가지 않는다.
 
 ```
-계획 → 구현 → 자가검증 → (게이트) → 다음
+scaffold → build-data → build-domain → build-screen(화면별 반복) → verify
+  뼈대·토큰      데이터 계층      도메인 유스케이스     화면 6상태          완료 게이트
 ```
 
-1. **계획**: `screens.yaml`의 대상 화면 + `tokens.json` + `product.yaml`을 읽는다.
-2. **구현**: 6상태(또는 명시적 na) 전부. 토큰 하드코딩 없이 — `tokens.json`에서 생성된 값만.
-3. **자가검증**: `python3 scripts/validate.py` **PASS** 필수. 해당 화면 E2E/위젯 테스트까지.
-   - `state/tasks.yaml`의 화면 status를 `built` → 검증 통과 시 `verified`로 갱신.
-4. **대시보드**: `python3 scripts/status.py`로 STATUS.md 갱신.
-5. **게이트**: GATES.md의 게이트가 걸리면 `state/decisions.yaml`에 올리고 **멈춘다**(§4).
+1. **scaffold**: `architecture.yaml`의 stack·layers로 뼈대 + `tokens.json`에서 토큰 상수 파일 생성. 그 파일을 `bindings.yaml`의 `token_sources`에 기록.
+2. **build-data / build-domain**: 데이터 계층(엔티티·DB·리포지토리) → 도메인 유스케이스(순수 로직, presentation·data 비의존). 생성 파일을 `bindings.yaml`에 기록(화면 종속이면 `screen:`, 공용이면 `layer: data|domain`).
+3. **build-screen (화면 1개 단위)**: `screens.yaml`의 대상 화면 + `tokens.json` + `product.yaml`을 읽고 6상태(또는 명시적 na) 전부 구현. 토큰 하드코딩 없이 — 토큰 상수만. 이벤트는 `events.yaml` 이름 그대로. 만든 파일을 `bindings.yaml`의 해당 화면 `files`에 기록.
+4. **자가검증**: `python3 scripts/validate.py` **PASS** + 코드 게이트(§5). `state/tasks.yaml`의 화면 status를 `built`로 갱신(구현 에이전트는 `verified`로 올리지 않는다 — §5).
+5. **대시보드**: `python3 scripts/status.py`로 STATUS.md 갱신. (advisory) `python3 scripts/trace.py`로 스펙↔코드 드리프트 확인 — warn은 보고만.
+6. **게이트**: GATES.md의 게이트가 걸리면 `state/decisions.yaml`에 올리고 **멈춘다**(§4).
 
 ## 4. 에이전트가 혼자 결정하면 안 되는 것 (→ decisions.yaml 큐)
 
@@ -53,9 +57,15 @@
 ## 5. 검증 계약 (자가 게이트)
 
 - `validate.py` PASS = spec 무결성(자리표시자·6상태·대비·이벤트 정합·수익 필드·블로커).
-- 게이트별 강제: `--gate evidence`(증거 2종·필수 필드) · `--gate scope`(p0≤5·out_of_scope) · `--gate brand_ux`(대비 쌍) · `--gate launch`(블로커 0 + 미성년 규제 + launch 승인).
+- 게이트별 강제: `--gate evidence`(증거 2종·필수 필드) · `--gate scope`(p0≤5·out_of_scope) · `--gate brand_ux`(대비 쌍) · `--gate launch`(블로커 0 + 미성년 규제 + 전 화면 verified(+verify_evidence: PASS·by·date)/launch_scope 제외(p0은 제외 불가) + pending 결정 0 + launch 승인 결정 존재).
 - 코드 게이트(매 화면): `architecture.yaml`의 `commands`(analyze·format·test)를 돌린다.
   예: Flutter면 `flutter analyze` 무경고 · `dart format` · 위젯/E2E. React Native면 lint·typecheck·test.
+- **verified 전환 규칙**: 구현 에이전트는 자기 화면을 `verified`로 올리지 않는다 — `built`까지만.
+  `verified` 전환은 **별도 verifier 패스**(깨끗한 맥락)가 validate PASS + 코드 게이트 PASS를 확인하고
+  `verify_evidence: { validate: PASS, code_gates: PASS, by: verifier, date: YYYY-MM-DD }`를 tasks.yaml에 기록하며 수행한다.
+  launch 게이트가 이 증거를 재확인한다 — 증거 없는 verified는 launch에서 FAIL.
+  (한계: 커널은 코드 게이트를 재실행하지 않는다 — code_gates=PASS는 verifier 러너의 기록을 신뢰한다. 그래서 기록 주체 분리가 필수.)
+- **드리프트 lint(advisory)**: `python3 scripts/trace.py`가 `bindings.yaml` 기준으로 "선언한 6상태·이벤트가 실제 코드에 있는가"를 훑는다. warn 전용(`--strict`만 exit 1) — 정규식 수준이라 게임 가능, 게이트가 아니라 참고 신호다.
 - **PASS 아니면 다음 화면으로 넘어가지 않는다.** 그럴듯한 미완성 코드로 진행하지 않는다.
 
 ## 6. 코드 출력 기준 (spec 준수 체크)

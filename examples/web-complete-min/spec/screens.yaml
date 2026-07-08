@@ -1,0 +1,28 @@
+# screens.yaml — 화면 명세 + 6상태 계약(web 프로파일: 공통4 + route_404/auth_required)
+# web-complete-min: 화면 2개(bookmarks, tags). 인증 없는 로컬 전용 앱이라 auth_required는
+# 두 화면 모두 na — mobile 기준 _complete-min이 offline을 na로 두는 것과 대칭이다.
+
+screens:
+  - id: bookmarks
+    purpose: "저장한 북마크를 보고 추가·삭제하며 태그로 찾는다"
+    priority: p0
+    acceptance: "URL·제목·태그를 입력해 저장하면 목록에 즉시 표시되고 새로고침 후에도 유지된다"
+    states:
+      loading:   { ui: "북마크 목록 로딩 스켈레톤", copy: "" }
+      empty:     { ui: "추가 폼 + 안내 문구", copy: "첫 북마크를 저장해보세요" }
+      error:     { ui: "에러 카드 + 재시도 버튼(입력 내용 유지)", copy: "저장에 실패했어요. 다시 시도해주세요" }
+      success:   { ui: "북마크 목록 + 태그 필터 칩 + 삭제 버튼", copy: "" }
+      route_404: { ui: "잘못된 경로 안내 카드 + 목록으로 돌아가기 링크", copy: "페이지를 찾을 수 없어요" }
+      auth_required: { na: "로그인 없는 로컬 전용 앱이라 인증 상태 자체가 없음(계정/서버 미사용)" }
+
+  - id: tags
+    purpose: "저장된 태그 목록을 보고 이름을 바꾸거나 삭제해 정리한다"
+    priority: p1
+    acceptance: "태그를 삭제하면 해당 태그가 붙은 북마크에서도 태그가 제거된다"
+    states:
+      loading:   { ui: "태그 목록 로딩 스켈레톤", copy: "" }
+      empty:     { ui: "안내 문구만 표시", copy: "아직 태그가 없어요. 북마크에 태그를 달아보세요" }
+      error:     { ui: "에러 카드 + 재시도 버튼", copy: "태그를 불러오지 못했어요. 다시 시도해주세요" }
+      success:   { ui: "태그 목록 + 이름 변경·삭제 버튼", copy: "" }
+      route_404: { na: "라우팅은 bookmarks 화면의 앱 셸(라우터)이 전역 처리 — 화면별 중복 구현 아님" }
+      auth_required: { na: "로그인 없는 로컬 전용 앱이라 인증 상태 자체가 없음(계정/서버 미사용)" }

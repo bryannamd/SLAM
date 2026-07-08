@@ -5,6 +5,13 @@
 name: "TODO"
 one_liner: "TODO"
 platforms: [ios, android]      # ios | android | web
+platform_profile: mobile        # mobile | web | hybrid — 상태 계약·권장 지표·출시 표현이 갈린다
+                                #   mobile: 상태에 offline·permission_denied 요구 / 지표 cold_start 권장
+                                #   web:    상태에 route_404·auth_required 요구 / 지표 lcp 등 Core Web Vitals 권장
+                                #   hybrid: 위 둘 다 요구
+                                # 생략 시 platforms로 폴백(web 전용→web, 그 외→mobile) — 명시 권장
+deploy_target: app_store        # app_store | web_host | both (선택) — 생략 시 프로파일로 폴백
+                                #   mobile→app_store / web→web_host / hybrid→both. Launch 게이트 표현이 갈린다
 backend: false                  # false면 서버/openapi 스펙 전체 생략(오프라인·로컬 우선)
 audience: general               # general | minors (minors면 compliance.yaml COPPA 강제)
 risk_class: low                 # low | medium | high

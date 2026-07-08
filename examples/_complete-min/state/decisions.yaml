@@ -1,0 +1,39 @@
+# decisions.yaml — 인간 승인 큐
+# _complete-min: 게이트 3건(evidence/scope/launch) 전부 approved — pending 0.
+
+decisions:
+  - id: D001
+    gate: evidence
+    decision: "OneLine을 만들지 결정"
+    recommendation: "진행 — 경쟁앱 리뷰·키워드 증거 확보, kill 기준 미해당"
+    alternatives: ["보류하고 랜딩 테스트 먼저"]
+    risk: "낮음"
+    impacts: [evidence.yaml]
+    reversible: true
+    status: approved
+    decided_by: "팀원 A"
+    date: "2026-07-08"
+
+  - id: D002
+    gate: scope
+    decision: "MVP 범위를 홈 화면 1개(한 줄 작성·조회·리마인더)로 확정"
+    recommendation: "승인 — p0 3개, out_of_scope 3개로 범위 명확"
+    alternatives: ["통계·이력 화면을 v1에 포함"]
+    risk: "낮음"
+    impacts: [product.yaml, screens.yaml]
+    reversible: true
+    status: approved
+    decided_by: "팀원 B"
+    date: "2026-07-08"
+
+  - id: D003
+    gate: launch
+    decision: "OneLine v1 출시 승인"
+    recommendation: "승인 — 블로커 전부 resolved, home verified(+verify_evidence), pending 결정 없음"
+    alternatives: ["출시 1주 연기 후 재검토"]
+    risk: "낮음"
+    impacts: [compliance.yaml, state/tasks.yaml]
+    reversible: false
+    status: approved
+    decided_by: "팀원 A"
+    date: "2026-07-08"

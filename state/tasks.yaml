@@ -1,5 +1,9 @@
 # tasks.yaml — 화면·기능별 진행상태(에이전트가 갱신, STATUS.md 입력).
 # status: todo | in_progress | built | verified | blocked. screen은 screens.yaml의 id와 일치.
+# verified 전환은 verifier 패스가 verify_evidence와 함께 기록한다(구현 에이전트 자가 신고 아님):
+#   verify_evidence: { validate: PASS, code_gates: PASS, by: verifier, date: YYYY-MM-DD }
+# launch 범위 밖 화면은 launch_scope: false + launch_scope_reason: "<사유>" 로 명시(사유 없으면 launch FAIL).
+#   단, p0 화면은 제외 불가(MVP 핵심), 출시 범위엔 verified 화면이 최소 1개 남아야 한다.
 # 채워진 예시: examples/sip-reminder/state/tasks.yaml
 
 tasks: []

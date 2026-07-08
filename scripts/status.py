@@ -14,10 +14,16 @@ import sys
 import yaml
 
 SCRIPT = pathlib.Path(__file__).resolve()          # scripts/validate.py 위치 고정용
+sys.path.insert(0, str(SCRIPT.parent))             # 같은 폴더 validate.py의 상태 계약을 단일 원천으로 재사용
+from validate import state_keys_for, resolve_profile  # noqa: E402  (프로파일별 상태 키 — validate.py와 동기)
+
 ROOT = SCRIPT.parent.parent                         # 대시보드 대상 프로젝트 루트(기본=repo 루트)
 if "--root" in sys.argv:
-    ROOT = pathlib.Path(sys.argv[sys.argv.index("--root") + 1]).resolve()
-STATE_KEYS = ["loading", "empty", "error", "success", "offline", "permission_denied"]
+    i = sys.argv.index("--root")
+    if i + 1 >= len(sys.argv):                      # 경로 생략 시 IndexError 대신 안내 후 종료
+        print("--root 뒤에 경로가 필요합니다: python3 scripts/status.py --root <경로>")
+        sys.exit(2)
+    ROOT = pathlib.Path(sys.argv[i + 1]).resolve()
 
 
 def y(rel):
@@ -46,6 +52,7 @@ def cell(v, dash="—"):
 
 def main():
     manifest = y("spec/manifest.yaml")
+    state_keys = state_keys_for(resolve_profile(manifest))  # 프로파일별 상태 키(mobile/web/hybrid)
     screens = lst(y("spec/screens.yaml").get("screens"))
     tasks = {t.get("screen"): t for t in lst(y("state/tasks.yaml").get("tasks"))
              if isinstance(t, dict) and isinstance(t.get("screen"), str) and t.get("screen")}
@@ -83,8 +90,8 @@ def main():
             continue  # 형식 오류는 validate가 FAIL로 잡는다 — 대시보드는 건너뛰고 그린다
         st = s.get("states", {})
         st = st if isinstance(st, dict) else {}
-        impl = sum(1 for k in STATE_KEYS if isinstance(st.get(k), dict) and "na" not in st[k])
-        na = sum(1 for k in STATE_KEYS if isinstance(st.get(k), dict) and "na" in st[k])
+        impl = sum(1 for k in state_keys if isinstance(st.get(k), dict) and "na" not in st[k])
+        na = sum(1 for k in state_keys if isinstance(st.get(k), dict) and "na" in st[k])
         t = tasks.get(s["id"], {})
         status_key = t.get("status") if isinstance(t.get("status"), str) else None
         L.append(f"| {cell(s['id'])} | {cell(s.get('priority'), '')} | {emoji.get(status_key, '⬜ todo')} "

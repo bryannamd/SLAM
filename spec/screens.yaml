@@ -1,8 +1,13 @@
-# screens.yaml — 화면 명세 + 6상태 계약. 채워진 예시: examples/sip-reminder/spec/screens.yaml
-# 6상태(loading/empty/error/success/offline/permission_denied)를 각 화면마다:
-#   구현: { ui: "...", copy: "..." }   /   불가능: { na: "<사유>" }
+# screens.yaml — 화면 명세 + 상태 계약. 채워진 예시: examples/sip-reminder/spec/screens.yaml
+# 요구 상태 키는 manifest.platform_profile로 갈린다:
+#   공통(전 프로파일): loading / empty / error / success
+#   mobile 추가:       offline / permission_denied
+#   web 추가:          route_404 / auth_required
+#   hybrid:            위 공통 4 + 모바일 2 + 웹 2 전부
+# 각 상태를 화면마다: 구현 { ui: "...", copy: "..." } / 불가능 { na: "<사유>" }
 # validate가 누락(FAIL)과 명시적 na(OK)를 구분한다. p0 화면은 acceptance 필수.
-# 아래는 스켈레톤 1개 — 실제 화면으로 교체/추가한다.
+# 아래 스켈레톤은 mobile 프로파일 기준 — web/hybrid면 offline·permission_denied를
+# route_404·auth_required로 바꾸거나(hybrid는 넷 다) 실제 화면으로 교체/추가한다.
 
 screens:
   - id: home
@@ -16,3 +21,6 @@ screens:
       success:  { ui: "TODO", copy: "TODO" }
       offline:  { na: "TODO — 해당 없으면 사유, 아니면 ui로 교체" }
       permission_denied: { na: "TODO — 해당 없으면 사유, 아니면 ui로 교체" }
+      # web 프로파일이면 위 offline·permission_denied 대신:
+      # route_404:     { ui: "TODO — 잘못된 경로 처리", copy: "TODO" }
+      # auth_required: { ui: "TODO — 로그인 유도", copy: "TODO" }

@@ -1,0 +1,13 @@
+# events.yaml — 분석 이벤트의 단일 원천(SSOT)
+# metrics.yaml의 지표가 이 이벤트들을 참조한다. app/lib/home_screen.dart가 logEvent()로 실제 호출한다.
+
+events:
+  - name: app_open
+    trigger: "앱 실행"
+    props: [os, version]
+  - name: note_saved
+    trigger: "오늘 한 줄 메모 저장"
+    props: [length, is_edit]
+  - name: reminder_permission_result
+    trigger: "알림 권한 응답"
+    props: [granted]

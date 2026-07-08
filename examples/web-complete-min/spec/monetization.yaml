@@ -1,0 +1,17 @@
+# monetization.yaml — 수익 모델
+# web-complete-min: manifest.monetization_model == free. 유료 필드(pricing 등) 불필요.
+
+model: free
+free_features:
+  - "북마크 추가·조회·삭제"
+  - "태그별 필터링·태그 관리"
+
+unit_economics:
+  store_fee: "해당 없음(앱스토어 결제 없음)"
+  monthly_opex: "정적 호스팅 무료 티어 + 도메인비만(서버 없음)"
+  rule: "무료 모델 — 광고·결제 없이 사용성·리텐션만으로 가치 검증"
+
+seo:
+  page_title: "LinkBox — 태그로 정리하는 북마크"
+  keywords: "북마크 정리, 링크 저장, 태그 필터"
+  meta_description: "로그인 없이 브라우저에 저장하고 태그로 찾는 가장 가벼운 북마크 정리 웹앱"

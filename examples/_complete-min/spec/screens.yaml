@@ -1,0 +1,15 @@
+# screens.yaml — 화면 명세 + 6상태 계약
+# _complete-min: 화면 1개(home)만 존재. 6상태 전부 명시(구현 5 + na 1, 사유 포함).
+
+screens:
+  - id: home
+    purpose: "오늘 한 줄 메모를 보고 쓴다"
+    priority: p0
+    acceptance: "입력창에 한 줄을 쓰고 저장하면 오늘 메모로 즉시 표시되고 재실행 후에도 유지된다"
+    states:
+      loading:   { ui: "오늘 메모 로딩 스켈레톤", copy: "" }
+      empty:     { ui: "입력창 + 안내 문구", copy: "오늘 한 줄을 남겨보세요" }
+      error:     { ui: "에러 카드 + 재시도 버튼(입력 내용 유지)", copy: "저장에 실패했어요. 다시 시도해주세요" }
+      success:   { ui: "저장된 오늘 메모 + 수정 버튼", copy: "" }
+      offline:   { na: "로컬 저장만 사용하는 오프라인 앱이라 온라인 의존이 없음" }
+      permission_denied: { ui: "상단 권한 재요청 배너", copy: "알림 권한이 꺼져 있어요. 저녁 리마인더를 받으려면 켜주세요" }

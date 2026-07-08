@@ -1,0 +1,29 @@
+# compliance.yaml — 개인정보·규제 블로커(웹 배포용 — 앱스토어 심사 항목 대신 쿠키/약관 중심)
+# validate --gate launch 는 모든 blocker의 resolved: true 를 요구한다.
+# manifest.audience == general 이므로 minors 섹션은 all N/A로 둔다.
+
+privacy:
+  collects_pii: false
+  privacy_policy_url: "https://example.com/linkbox/privacy"
+  terms_url: "https://example.com/linkbox/terms"
+  cookies: "없음(localStorage만 사용, 트래킹 쿠키·서드파티 스크립트 없음)"
+
+minors:
+  applicable: false
+  coppa: "N/A — 일반 대상 앱(만 14세 미만 특정 아님)"
+  parental_consent: "N/A"
+  behavioral_ads_restricted: "N/A"
+
+blockers:
+  - id: privacy_policy
+    desc: "개인정보 처리방침 URL 유효"
+    resolved: true
+  - id: terms
+    desc: "이용약관 URL 유효"
+    resolved: true
+  - id: cookie_notice
+    desc: "쿠키 미사용 고지(또는 쿠키 배너 불필요 확인) — localStorage 전용임을 명시"
+    resolved: true
+  - id: https_enforced
+    desc: "배포 도메인 HTTPS 강제(HSTS) 설정"
+    resolved: true

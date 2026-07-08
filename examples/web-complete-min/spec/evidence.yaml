@@ -1,0 +1,29 @@
+# evidence.yaml — Evidence Gate
+# web-complete-min: 회귀 테스트용 fixture. 아래 evidence 항목은 실제 조사 결과를 요약한 것이다.
+
+problem: "브라우저 기본 북마크바는 늘어날수록 폴더 뒤지기가 번거로워 결국 저장을 포기하게 된다"
+target_user: "여러 탭을 열어두고 나중에 볼 링크를 자주 저장하는 지식노동자·학생"
+acquisition_channel: "생산성·북마크 키워드 SEO + 개발자 커뮤니티 공유"
+value_hypothesis: "폴더 대신 태그로 찾게 하면 정리 마찰이 줄어 저장한 링크를 실제로 다시 찾아 쓰게 된다"
+willingness_hypothesis: "계정 가입 없이 바로 쓸 수 있으면 진입 장벽이 낮아 첫 방문에서 바로 북마크를 저장한다"
+
+evidence:
+  - type: competitor_review
+    source: "북마크 관리 웹앱 상위 3종 리뷰·포럼 스레드 표본"
+    finding: "'가입부터 시키는 게 귀찮다', '폴더 정리하다 지친다' 불만이 반복됨 → 무가입·태그 우선이 차별점"
+  - type: keyword_volume
+    source: "검색엔진 키워드 도구"
+    finding: "'북마크 정리', '링크 저장 앱' 키워드 검색량이 꾸준하고 무료 대안 요구가 많음 → 수요 존재"
+
+competitors:
+  - name: "북마크앱 A"
+    strength: "브라우저 확장 연동이 강력함"
+    weakness: "가입 필수 + 무료 티어 저장 개수 제한"
+  - name: "북마크앱 B"
+    strength: "폴더·태그를 모두 지원"
+    weakness: "온보딩이 길고 초기 설정이 복잡함"
+
+kill_criteria:
+  - "'태그만으로 충분하다'는 가설에 대한 부정 반응이 압도적임(사용자가 폴더 구조를 강하게 요구)"
+  - "동일 문제를 이미 잘 푸는 무료 무가입 대안이 있고 우리 차별점이 없음"
+  - "출시 후 4주간 tag_filter_usage_rate가 목표의 절반에도 못 미침"

@@ -1,0 +1,16 @@
+# bindings.yaml — 화면↔코드 파일 매핑(빌드 시 에이전트가 기록, trace.py·codemap.py의 입력).
+# 화면 하나를 구현하면 그 화면 id와 만든 코드 파일을 여기에 적는다.
+# 이 매핑이 있어야 trace.py가 "선언한 상태·이벤트가 실제 코드에 있는가"를 검사한다(advisory lint).
+#
+# token_sources: 디자인 토큰 상수 파일 목록. hex 색 리터럴이 허용되는 유일한 지점이라
+#   하드코딩 색 검사에서 제외된다. 나머지 파일은 AppColors/* 같은 토큰 참조만 써야 한다.
+# bindings: 화면(screens.yaml의 id)별로 만든 코드 파일 경로(--root 기준 상대경로).
+#   화면에 종속되지 않는 공용 코드(data/domain 계층의 공유 리포지토리·유스케이스 등)는
+#   screen 대신 `layer: data` 또는 `layer: domain`으로 적는다 — trace.py는 screen 없는
+#   항목을 화면 커버리지 검사에서 제외하고, 하드코딩 색·이벤트 검사에는 그대로 포함한다.
+#
+# 채워진 예시: examples/_complete-min/state/bindings.yaml
+
+token_sources: []
+
+bindings: []

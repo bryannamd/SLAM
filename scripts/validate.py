@@ -4,13 +4,16 @@
 자율 파이프라인의 게이트: 이 스크립트가 green이어야 다음 단계로 간다.
 에이전트가 '그럴듯한 쓰레기'를 만들어도 여기서 걸린다.
 
+플랫폼 프로파일(manifest.platform_profile: mobile|web|hybrid)에 따라 상태 계약·권장 지표가 분기한다.
+프로파일 미지정 시 platforms로 폴백(web 전용→web, 그 외→mobile)하고 명시를 권장(warn)한다.
+
 사용:
   python3 scripts/validate.py              # 루트 spec/ 검증
   python3 scripts/validate.py --root examples/sip-reminder  # 하위 프로젝트 검증
   python3 scripts/validate.py --gate evidence   # Evidence 게이트: 증거 2종·kill 기준을 FAIL로 강제
   python3 scripts/validate.py --gate scope      # Scope 게이트: p0≤5·out_of_scope 강제
   python3 scripts/validate.py --gate brand_ux   # Brand/UX 게이트: 대비 쌍 존재 강제
-  python3 scripts/validate.py --gate launch     # 출시 블로커까지 검사
+  python3 scripts/validate.py --gate launch     # 출시: 블로커 0 + 전 화면 verified(+verify_evidence)/launch_scope 제외 + pending 결정 0 + launch 승인 결정 존재
   python3 scripts/validate.py --selftest     # 대비 계산 자가검증
   python3 scripts/validate.py --strict       # 경고도 실패로 취급
 종료코드: 0 통과 / 1 실패
@@ -23,7 +26,10 @@ import yaml
 
 # 검증 대상 프로젝트 루트(기본=repo 루트). --root 로 examples/sip-reminder 등을 가리킨다.
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-STATE_KEYS = ["loading", "empty", "error", "success", "offline", "permission_denied"]
+# 상태 계약은 플랫폼 프로파일별로 분기한다. 공통 4 + 프로파일 추가분.
+STATE_COMMON = ["loading", "empty", "error", "success"]
+STATE_MOBILE = ["offline", "permission_denied"]   # 모바일 고유(네트워크·OS 권한)
+STATE_WEB = ["route_404", "auth_required"]          # 웹 고유(라우팅·세션)
 PLACEHOLDER = re.compile(r"\[[^\]]*\]|___|TODO|FIXME")
 
 errors = []
@@ -46,6 +52,42 @@ def req_list(container, key, label):
         err(f"{label}: 리스트여야 함")
         return []
     return v
+
+
+def state_keys_for(profile):
+    """프로파일별 요구 상태 키. mobile=공통+모바일2 / web=공통+웹2 / hybrid=전부."""
+    if profile == "web":
+        return STATE_COMMON + STATE_WEB
+    if profile == "hybrid":
+        return STATE_COMMON + STATE_MOBILE + STATE_WEB
+    return STATE_COMMON + STATE_MOBILE  # mobile(기본)
+
+
+def resolve_profile(manifest):
+    """manifest.platform_profile를 반환. 없으면 platforms로 폴백(web 전용→web, 그 외→mobile) + warn."""
+    prof = manifest.get("platform_profile") if manifest else None
+    if prof is not None:
+        if enum_ok(prof, {"mobile", "web", "hybrid"}):
+            return prof
+        err(f"manifest.platform_profile 값 오류: {prof!r} (mobile|web|hybrid)")
+        return "mobile"
+    plats = manifest.get("platforms") if manifest else None
+    if isinstance(plats, list) and plats and all(p == "web" for p in plats):
+        fallback = "web"
+    else:
+        fallback = "mobile"
+    warn(f"manifest: platform_profile 미지정 — platforms 기반 '{fallback}'로 폴백(platform_profile 명시 권장)")
+    return fallback
+
+
+def resolve_deploy_target(manifest, profile):
+    """manifest.deploy_target을 반환(선택 필드). 없으면 프로파일 폴백(mobile→app_store/web→web_host/hybrid→both)."""
+    dt = manifest.get("deploy_target") if manifest else None
+    if dt is not None:
+        if enum_ok(dt, {"app_store", "web_host", "both"}):
+            return dt
+        err(f"manifest.deploy_target 값 오류: {dt!r} (app_store|web_host|both)")
+    return {"mobile": "app_store", "web": "web_host", "hybrid": "both"}[profile]
 
 
 def load_yaml(rel):
@@ -107,6 +149,10 @@ def selftest():
     assert round(contrast("#FFFFFF", "#FFFFFF"), 2) == 1.0, "same color must be 1:1"
     assert contrast("#0F172A", "#FFFFFF") > 15, "textPrimary/bg should be high"
     assert contrast("#94A3B8", "#FFFFFF") < 4.5, "disabled/bg should fail AA-normal"
+    # 프로파일별 상태 키 계약
+    assert state_keys_for("mobile") == ["loading", "empty", "error", "success", "offline", "permission_denied"]
+    assert state_keys_for("web") == ["loading", "empty", "error", "success", "route_404", "auth_required"]
+    assert set(state_keys_for("hybrid")) == set(STATE_COMMON + STATE_MOBILE + STATE_WEB)
     print("selftest OK")
 
 
@@ -154,7 +200,8 @@ def main():
 
     for nm, ob in [("manifest", manifest), ("evidence", evidence), ("product", product),
                    ("screens", screens), ("architecture", load_yaml("spec/architecture.yaml")),
-                   ("monetization", monet), ("compliance", compliance)]:
+                   ("monetization", monet), ("compliance", compliance),
+                   ("tokens", tokens), ("tasks", tasks), ("decisions", decisions)]:
         if ob is not None:
             check_placeholders(nm, ob)
 
@@ -180,6 +227,10 @@ def main():
             err(f"manifest.audience 값 오류: {manifest.get('audience')!r}")
         if not enum_ok(manifest.get("monetization_model"), {"free", "freemium", "subscription", "iap", "ads"}):
             err(f"manifest.monetization_model 값 오류: {manifest.get('monetization_model')!r}")
+
+    # 플랫폼 프로파일 — 상태 계약·권장 지표·출시 표현이 여기서 갈린다.
+    profile = resolve_profile(manifest)
+    deploy_target = resolve_deploy_target(manifest, profile)
 
     # evidence — 전역에선 warn(작성 초기 소음 방지), --gate evidence에선 FAIL로 승격
     if evidence:
@@ -218,22 +269,28 @@ def main():
         elif not isinstance(oos, list):
             err("[scope] out_of_scope는 리스트여야 함")
 
-    # screens — 6상태 계약
+    # screens — 상태 계약(프로파일별 상태 키 집합)
+    profile_state_keys = state_keys_for(profile)
     screen_ids = []
+    screen_priority = {}   # sid → priority (launch 게이트의 p0 제외 차단에서 참조)
     if screens and isinstance(screens.get("screens"), list):
         for s in screens["screens"]:
             if not isinstance(s, dict):
                 err(f"screens: 항목이 매핑이 아님: {s!r}")
                 continue
             sid = s.get("id", "?")
+            if not isinstance(sid, str) or not sid.strip():
+                err(f"screens: id가 비어 있거나 문자열이 아님: {sid!r}")
+                continue
             screen_ids.append(sid)
+            screen_priority[sid] = s.get("priority")
             if s.get("priority") == "p0" and not s.get("acceptance"):
                 err(f"screens[{sid}]: p0 화면은 acceptance 필수")
             st = s.get("states", {})
             if not isinstance(st, dict):
                 err(f"screens[{sid}].states: 매핑이어야 함")
                 continue
-            for k in STATE_KEYS:
+            for k in profile_state_keys:
                 if k not in st:
                     err(f"screens[{sid}]: 상태 누락: {k} (구현하거나 {{na: 사유}}로 명시)")
                     continue
@@ -275,8 +332,13 @@ def main():
                     err(f"metrics.product[{m.get('key')}]: 미정의 이벤트 참조: {u}")
         client_keys = {c.get("key") for c in req_list(metrics, "client", "metrics.client")
                        if isinstance(c, dict) and isinstance(c.get("key"), str)}
-        if "cold_start" not in client_keys:
+        # 프로파일별 권장 지표: 모바일=cold_start 등, 웹=Core Web Vitals(lcp 등).
+        if profile in ("mobile", "hybrid") and "cold_start" not in client_keys:
             warn("metrics.client: 모바일 고유 지표(cold_start 등) 권장")
+        if profile in ("web", "hybrid"):
+            web_vitals = {"lcp", "fcp", "cls", "inp", "ttfb", "fid", "core_web_vitals"}
+            if not (client_keys & web_vitals):
+                warn("metrics.client: 웹 고유 지표(lcp 등 Core Web Vitals) 권장")
 
     # monetization ↔ manifest 정합
     if monet and manifest and monet.get("model") != manifest.get("monetization_model"):
@@ -330,7 +392,9 @@ def main():
                 err(f"tokens 대비 미달: {fg}/{bg} = {ratio:.2f}:1 (필요 {need}:1, {role})")
 
     # state/tasks
+    task_list = []
     if tasks:
+        task_list = [t for t in req_list(tasks, "tasks", "tasks") if isinstance(t, dict)]
         for t in req_list(tasks, "tasks", "tasks"):
             if not isinstance(t, dict):
                 err(f"tasks: 항목이 매핑이 아님: {t!r}")
@@ -339,6 +403,11 @@ def main():
                 err(f"tasks: screens에 없는 화면: {t.get('screen')}")
             if not enum_ok(t.get("status"), {"todo", "in_progress", "built", "verified", "blocked"}):
                 err(f"tasks[{t.get('screen')}]: status 값 오류: {t.get('status')!r}")
+            if "launch_scope" in t and not isinstance(t.get("launch_scope"), bool):
+                err(f"tasks[{t.get('screen')}]: launch_scope는 true/false여야 함")
+            # verified는 자가 신고가 아니라 verifier 패스의 기록(verify_evidence)이 뒷받침해야 한다(AGENTS.md §5)
+            if t.get("status") == "verified" and not isinstance(t.get("verify_evidence"), dict):
+                warn(f"tasks[{t.get('screen')}]: verified인데 verify_evidence 없음 — launch 게이트에서 FAIL")
 
     # decisions
     if decisions:
@@ -368,16 +437,58 @@ def main():
                 for k in ["coppa", "parental_consent"]:
                     if "N/A" in str(mn.get(k, "N/A")):
                         err(f"[launch] minors.{k} 미작성(COPPA 필수)")
+        # 출시 = 되돌리기 어려움. 어떤 게이트든 pending이 남아 있으면 GO가 아니다.
+        # (rejected는 이미 해소된 결정 — 블로킹하지 않음. 연기하려면 rejected로 기록하고 사유를 남긴다.)
+        dl = decisions.get("decisions") if decisions else None
+        dl = dl if isinstance(dl, list) else []
         if decisions:
-            dl = decisions.get("decisions")
-            pend = [d.get("id") for d in (dl if isinstance(dl, list) else [])
-                    if isinstance(d, dict) and d.get("gate") == "launch" and d.get("status") == "pending"]
+            pend = [d.get("id") for d in dl
+                    if isinstance(d, dict) and d.get("status") == "pending"]
             if pend:
-                err(f"[launch] 미승인 launch 결정: {pend}")
+                err(f"[launch] 미해소 pending 결정: {pend} — 모든 게이트 결정이 승인/반려돼야 출시")
+        # 출시 승인 결정이 실존해야 GO. pending==0만으론 `decisions: []`(빈 리스트)로 우회 가능 —
+        # GATES.md #5의 "GO는 decisions.yaml에 launch 결정 approved로 기록돼야 배포된다" 계약의 기계 승격.
+        if not any(isinstance(d, dict) and d.get("gate") == "launch" and d.get("status") == "approved"
+                   for d in dl):
+            err("[launch] launch 승인 결정 없음 — decisions.yaml에 gate:launch·status:approved 결정 필요")
+        # 모든 화면이 verified(+verify_evidence)이거나 launch_scope:false(+사유)여야 출시.
+        if not task_list:
+            err("[launch] tasks 비어 있음 — 검증된 화면 없이 출시 불가")
+        covered = {t.get("screen") for t in task_list if isinstance(t.get("screen"), str)}
+        for sid in screen_ids:
+            if sid not in covered:
+                err(f"[launch] tasks에 진행 기록 없는 화면: {sid}")
+        in_scope_verified = 0   # 출시 범위(launch_scope:false 아닌) 화면 중 verified 개수
+        for t in task_list:
+            sid = t.get("screen")
+            if not isinstance(sid, str):
+                continue  # 비문자열 screen은 위 state/tasks 검사에서 이미 FAIL
+            if t.get("launch_scope") is False:
+                # p0 화면은 출시 범위에서 제외 불가 — MVP 핵심 화면을 빼고 출시하는 모순을 막는다.
+                if screen_priority.get(sid) == "p0":
+                    err(f"[launch] tasks[{sid}]: p0 화면은 launch_scope:false로 제외 불가(MVP 핵심 화면)")
+                if not str(t.get("launch_scope_reason") or "").strip():
+                    err(f"[launch] tasks[{sid}]: launch_scope:false엔 launch_scope_reason 필수")
+                continue
+            if t.get("status") != "verified":
+                err(f"[launch] 미완성 화면: {sid} (status={t.get('status')!r}) — verified 또는 launch_scope:false 필요")
+                continue
+            in_scope_verified += 1
+            ve = t.get("verify_evidence")
+            if not isinstance(ve, dict):
+                err(f"[launch] tasks[{sid}]: verify_evidence 없음 — verifier 패스 기록 필수(AGENTS.md §5)")
+            elif not (ve.get("validate") == "PASS" and ve.get("code_gates") == "PASS"
+                      and str(ve.get("by") or "").strip()
+                      and re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(ve.get("date") or ""))):
+                err(f"[launch] tasks[{sid}]: verify_evidence 불충분(validate/code_gates=PASS + by + date=YYYY-MM-DD 필요)")
+        # 출시 범위에 verified 화면이 하나도 없으면 GO 아님(전 화면 launch_scope:false 우회 차단).
+        if task_list and in_scope_verified == 0:
+            err("[launch] 출시 범위에 verified 화면이 없음 — 전 화면을 launch_scope:false로 제외할 수 없음")
 
     # --- 리포트 ---
     print("=" * 56)
-    print(f"VALIDATE  gate={gate or 'all'}  screens={len(screen_ids)}  events={len(event_names)}")
+    print(f"VALIDATE  gate={gate or 'all'}  profile={profile}  deploy={deploy_target}  "
+          f"screens={len(screen_ids)}  events={len(event_names)}")
     for w in warns:
         print(f"  WARN  {w}")
     for e in errors:

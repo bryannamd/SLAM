@@ -1,0 +1,19 @@
+# metrics.yaml — 성공·성장 지표 타겟의 단일 원천
+# 각 지표는 events.yaml의 이벤트로 측정 가능해야 한다(uses). client에 lcp 등 Core Web Vitals 포함
+# (웹 고유 지표 warn 제거).
+
+product:
+  - key: bookmarks_per_active_user
+    target: "10개+/월"
+    uses: [bookmark_added]
+  - key: tag_filter_usage_rate       # 핵심 가치 지표 — 태그로 실제 찾아쓰는 비율
+    target: "40%+"
+    uses: [tag_filter_applied]
+
+client:
+  - key: lcp
+    target: "< 2.5s"
+  - key: cls
+    target: "< 0.1"
+  - key: local_storage_write
+    target: "< 10ms (북마크 1건 저장)"

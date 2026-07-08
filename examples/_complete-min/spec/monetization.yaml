@@ -1,0 +1,17 @@
+# monetization.yaml — 수익 모델
+# _complete-min: manifest.monetization_model == free. 유료 필드(pricing 등) 불필요.
+
+model: free
+free_features:
+  - "오늘 한 줄 메모 작성·조회·수정"
+  - "저녁 리마인더 알림"
+
+unit_economics:
+  store_fee: "해당 없음(결제 없음)"
+  monthly_opex: "툴·ASO 소액(서버 없음)"
+  rule: "무료 모델 — 광고·결제 없이 리텐션만으로 가치 검증"
+
+aso:
+  app_name: "OneLine — 하루 한 줄"
+  keywords: "한 줄 메모, 오늘 기록, 데일리 로그"
+  screenshot_hook: "첫 2장에 '하루 한 줄이면 충분하다' 가치 노출"

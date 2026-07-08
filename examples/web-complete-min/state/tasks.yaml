@@ -1,0 +1,25 @@
+# tasks.yaml — 화면·기능별 진행상태
+# web-complete-min: bookmarks·tags 2건 모두 verified(+verify_evidence)로 launch 게이트 PASS를 만든다.
+# 주의: 아래 verify_evidence는 fixture상 기록값이다 — 실제 tsc/prettier/vitest 툴체인을
+# 이 저장소에서 실행한 결과가 아니다(examples/REGRESSION.md 참고).
+
+tasks:
+  - screen: bookmarks
+    status: verified
+    verify: "6상태(5구현+1na) 정의 완료, 추가·삭제·필터 E2E 통과(fixture 기록)"
+    blocker: null
+    verify_evidence:
+      validate: PASS
+      code_gates: PASS
+      by: "verifier"
+      date: "2026-07-08"
+
+  - screen: tags
+    status: verified
+    verify: "6상태(4구현+2na) 정의 완료, 태그 이름변경·삭제 E2E 통과(fixture 기록)"
+    blocker: null
+    verify_evidence:
+      validate: PASS
+      code_gates: PASS
+      by: "verifier"
+      date: "2026-07-08"

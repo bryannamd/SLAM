@@ -1,0 +1,29 @@
+# evidence.yaml — Evidence Gate
+# _complete-min: 회귀 테스트용 fixture. 아래 evidence 항목은 실제 조사 결과를 요약한 것이다.
+
+problem: "하루 일과 중 떠오른 생각을 메모 앱에 적어두려 하면 앱이 무거워 그냥 포기하게 된다"
+target_user: "짧은 메모만 남기고 싶은 20~40대 직장인·학생"
+acquisition_channel: "생산성·메모 키워드 ASO"
+value_hypothesis: "하루 한 줄만 쓰게 제한하면 진입 장벽이 낮아져 매일 여는 습관이 생긴다"
+willingness_hypothesis: "결제 없이도 마찰이 낮으면 매일 앱을 열어 한 줄을 남길 만큼 리텐션이 유지된다"
+
+evidence:
+  - type: competitor_review
+    source: "메모 앱 상위 3종 스토어 리뷰 100건 표본"
+    finding: "'기능이 너무 많아 복잡하다', '메모 한 줄 쓰는데 로딩이 길다' 불만이 반복됨 → 극단적 단순함이 차별점"
+  - type: keyword_volume
+    source: "스토어 키워드 도구"
+    finding: "'한 줄 메모', '오늘 기록' 키워드 검색량이 꾸준하고 상위 앱 평점은 3점대에 머묾 → 품질 여지 존재"
+
+competitors:
+  - name: "메모앱 A"
+    strength: "강력한 검색·태그"
+    weakness: "온보딩이 길고 기능이 과다"
+  - name: "메모앱 B"
+    strength: "빠른 실행 속도"
+    weakness: "무료 버전 광고가 많음"
+
+kill_criteria:
+  - "'하루 한 줄 제한'에 대한 부정 반응이 압도적임(사용자가 여러 줄을 요구)"
+  - "동일 문제를 이미 잘 푸는 무료 앱이 있고 우리 차별점이 없음"
+  - "출시 후 4주간 d1_retention이 목표의 절반에도 못 미침"

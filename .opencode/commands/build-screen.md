@@ -2,6 +2,7 @@
 description: screens.yaml의 화면 하나를 6상태로 구현 → 검증 → tasks 갱신(4/4, 화면별 반복. scaffold→build-data→build-domain→build-screen→verify)
 argument-hint: <screen-id>
 ---
+<!-- 원본: .claude/commands/build-screen.md — 동기 수정(두 곳을 함께 고친다) -->
 
 대상 화면: `$ARGUMENTS`
 

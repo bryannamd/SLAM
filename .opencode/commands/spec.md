@@ -2,6 +2,7 @@
 description: 스펙 점검(읽기 전용) 또는 대화형 인테이크로 채우기 — 인자 없음은 진단, `fill`은 질문하며 값을 대신 기입
 argument-hint: [fill]
 ---
+<!-- 원본: .claude/commands/spec.md — 동기 수정(두 곳을 함께 고친다) -->
 
 `AGENTS.md`의 단일 원천 규칙을 따른다(spec가 canonical, docs는 생성물).
 

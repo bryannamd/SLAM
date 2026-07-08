@@ -1,5 +1,8 @@
 # metrics.yaml — 성공·성장 지표 타겟. product는 events.yaml 이벤트로 측정 가능해야 한다.
-# client는 모바일 고유 지표(서버 지표 대신). 채워진 예시: examples/sip-reminder/spec/metrics.yaml
+# client는 클라이언트 고유 지표 — manifest.platform_profile로 권장 지표가 갈린다:
+#   mobile/hybrid: cold_start 등(없으면 warn)
+#   web/hybrid:    lcp 등 Core Web Vitals(fcp/cls/inp/ttfb, 없으면 warn)
+# 채워진 예시: examples/sip-reminder/spec/metrics.yaml
 # 출시 후: 각 지표에 actual: "실측값"을 기입하면 STATUS.md 지표 표에 뜬다(폐루프 기준선).
 
 product:
@@ -9,7 +12,8 @@ product:
   # 핵심 가치 지표를 앱에 맞게 추가(uses에 events.yaml 이벤트 지정)
 
 client:
-  - key: cold_start
+  # mobile 프로파일 예시(web이면 lcp 등 Core Web Vitals로 교체):
+  - key: cold_start          # web이면: lcp   target: "< 2.5s"
     target: "< 2s"
   - key: crash_free_sessions
     target: "> 99.5%"

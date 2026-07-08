@@ -1,0 +1,13 @@
+# events.yaml — 분석 이벤트의 단일 원천(SSOT)
+# metrics.yaml의 지표가 이 이벤트들을 참조한다. app/src/*.tsx가 logEvent()로 실제 호출한다.
+
+events:
+  - name: bookmark_added
+    trigger: "북마크 저장"
+    props: [has_tag]
+  - name: bookmark_deleted
+    trigger: "북마크 삭제"
+    props: []
+  - name: tag_filter_applied
+    trigger: "태그 필터 칩 선택"
+    props: [tag]

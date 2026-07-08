@@ -5,7 +5,7 @@
 > ⚙️ 이 파일은 `scripts/status.py`가 생성한다. 직접 편집하지 말 것(spec/·state/를 고친다).
 
 - 플랫폼: ios, android | backend: False | audience: general | risk: low | 수익: freemium
-- 검증: ✅ PASS  (`RESULT: PASS`)
+- 검증: ✅ PASS  (`RESULT: PASS(+warn)`)
 
 ## 화면 진행
 

@@ -1,0 +1,10 @@
+tasks:
+  - screen: home
+    status: verified
+    verify: "6상태(5구현+1na) 정의 완료, 저장 E2E 통과(fixture 기록)"
+    blocker: null
+    verify_evidence:
+      validate: PASS
+      code_gates: PASS
+      by: "verifier"
+      date: "2026-07-08"

@@ -6,6 +6,7 @@
 name: "SipReminder"                 # EXAMPLE — 앱 이름
 one_liner: "바쁜 직장인이 물 마시는 습관을 잊지 않도록 부드럽게 알려준다"  # EXAMPLE
 platforms: [ios, android]           # ios | android | web 중
+platform_profile: mobile            # mobile | web | hybrid — 상태 계약·권장 지표가 여기서 갈린다
 backend: false                      # false면 06/openapi·서버 스펙 전체를 건너뛴다(오프라인·로컬 우선)
 audience: general                    # general | minors  (minors면 compliance.yaml의 COPPA 게이트 강제)
 risk_class: low                      # low | medium | high — 결제·개인정보·외부비용이 크면 medium/high

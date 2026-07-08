@@ -1,0 +1,33 @@
+# compliance.yaml — 권한·개인정보·규제 블로커
+# validate --gate launch 는 모든 blocker의 resolved: true 를 요구한다.
+# manifest.audience == general 이므로 minors 섹션은 all N/A로 둔다.
+
+permissions:
+  - name: notifications
+    when: "첫 실행 직후 저녁 리마인더 안내와 함께"
+    reason: "매일 한 줄을 잊지 않도록 저녁에 알려주기 위해"
+
+privacy:
+  collects_pii: false
+  privacy_policy_url: "https://example.com/oneline/privacy"
+  terms_url: "https://example.com/oneline/terms"
+
+minors:
+  applicable: false
+  coppa: "N/A — 일반 대상 앱(만 14세 미만 특정 아님)"
+  parental_consent: "N/A"
+  behavioral_ads_restricted: "N/A"
+
+blockers:
+  - id: privacy_policy
+    desc: "개인정보 처리방침 URL 유효"
+    resolved: true
+  - id: terms
+    desc: "이용약관 URL 유효"
+    resolved: true
+  - id: apple_privacy_labels
+    desc: "App Privacy(수집 데이터 라벨) 정확 작성 — 수집 항목 없음으로 표기"
+    resolved: true
+  - id: play_data_safety
+    desc: "Google Play 데이터 안전 섹션 정확 작성 — 수집 항목 없음으로 표기"
+    resolved: true
